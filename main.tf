@@ -39,7 +39,7 @@ resource "aws_db_instance" "education" {
   publicly_accessible = true
   skip_final_snapshot = true
 
-  vpc_security_group_ids = [aws_security_group.sg.id]
+  vpc_security_group_ids = [aws_security_group.instance.id]
   subnet_id              = data.aws_subnet.selected.id
 
   db_name = "mypostgres"
