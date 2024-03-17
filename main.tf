@@ -10,12 +10,44 @@ data "aws_vpc" "selected" {
   }
 }
 
-data "aws_subnet" "selected" {
-  filter {
-    name   = "tag:kubernetes.io/cluster/education-eks-cluster"
-    values = ["shared"]
-  }
+data "aws_subnet_ids" "example" {
+  vpc_id = data.aws_vpc.selected.id
 }
+
+data "aws_subnet" "example" {
+  for_each = data.aws_subnet_ids.example.ids
+  id       = each.value
+}
+
+output "subnet_cidr_blocks" {
+  value = [for s in data.aws_subnet.example : s.cidr_block]
+}
+
+# data "aws_subnet_ids" "selected" {
+#   filter {
+#     name   = "tag:Name"
+#     values = ["postech-vpc"] # insert values here
+#   }
+# }
+
+# data "aws_subnet_ids" "selected" {
+
+
+
+#   filter {
+#         name   = "vpc-id"
+#         values = [data.aws_vpc.selected.id]
+#       }
+
+#       tags = {
+#         Name = "postech-vpc"
+#       }
+
+#   # filter {
+#   #   name   = "tag:Name"
+#   #   values = ["postech-vpc"]
+#   # }
+# }
 
 resource "aws_security_group" "instance" {
   name   = "postgres-security-group"
@@ -28,21 +60,27 @@ resource "aws_security_group" "instance" {
   }
 }
 
+resource "aws_db_subnet_group" "education" {
+  name       = "education"
+  subnet_ids = data.aws_subnet_ids.example.ids
+
+  tags = {
+    Name = "Education"
+  }
+}
+
 resource "aws_db_instance" "education" {
-  identifier          = "education"
-  instance_class      = "db.t3.micro"
-  allocated_storage   = 5
-  engine              = "postgres"
-  engine_version      = "14.11"
-  username            = "postgres"
-  password            = "postgres"
-  publicly_accessible = true
-  skip_final_snapshot = true
-
+  identifier             = "education"
+  instance_class         = "db.t3.micro"
+  allocated_storage      = 5
+  engine                 = "postgres"
+  engine_version         = "14.11"
+  username               = "postgres"
+  password               = "postgres"
+  publicly_accessible    = true
+  skip_final_snapshot    = true
+  db_subnet_group_name   = aws_db_subnet_group.education.name
   vpc_security_group_ids = [aws_security_group.instance.id]
-  # subnet_id              = data.aws_subnet.selected.id
-
-  db_name = "mypostgres"
 
   tags = {
     Name = "MyPostgresDB"
