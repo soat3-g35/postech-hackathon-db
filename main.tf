@@ -10,12 +10,12 @@ data "aws_vpc" "selected" {
   }
 }
 
-data "aws_subnet" "selected" {
-  filter {
-    name   = "tag:kubernetes.io/cluster/education-eks-cluster"
-    values = ["shared"]
-  }
-}
+# data "aws_subnet" "selected" {
+#   filter {
+#     name   = "tag:kubernetes.io/cluster/education-eks-cluster"
+#     values = ["shared"]
+#   }
+# }
 
 resource "aws_security_group" "instance" {
   name   = "postgres-security-group"
@@ -42,7 +42,7 @@ resource "aws_db_instance" "education" {
   vpc_security_group_ids = [aws_security_group.instance.id]
   # subnet_id              = data.aws_subnet.selected.id
 
-  db_name = "mypostgres"
+  #db_name = "mypostgres"
 
   tags = {
     Name = "MyPostgresDB"
