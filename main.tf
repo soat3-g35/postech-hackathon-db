@@ -23,32 +23,6 @@ output "subnet_cidr_blocks" {
   value = [for s in data.aws_subnet.example : s.cidr_block]
 }
 
-# data "aws_subnet_ids" "selected" {
-#   filter {
-#     name   = "tag:Name"
-#     values = ["postech-vpc"] # insert values here
-#   }
-# }
-
-# data "aws_subnet_ids" "selected" {
-
-
-
-#   filter {
-#         name   = "vpc-id"
-#         values = [data.aws_vpc.selected.id]
-#       }
-
-#       tags = {
-#         Name = "postech-vpc"
-#       }
-
-#   # filter {
-#   #   name   = "tag:Name"
-#   #   values = ["postech-vpc"]
-#   # }
-# }
-
 resource "aws_security_group" "instance" {
   name   = "postgres-security-group"
   vpc_id = data.aws_vpc.selected.id
@@ -76,7 +50,7 @@ resource "aws_db_instance" "education" {
   engine                 = "postgres"
   engine_version         = "14.11"
   username               = "postgres"
-  password               = "postgres"
+  password               = ${{ secrets.POSTGRESPASSWORD }}
   publicly_accessible    = true
   skip_final_snapshot    = true
   db_subnet_group_name   = aws_db_subnet_group.education.name
