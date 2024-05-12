@@ -23,12 +23,12 @@ output "subnet_cidr_blocks" {
   value = [for s in data.aws_subnet.example : s.cidr_block]
 }
 
-data "aws_security_group" "postgres_security_group" {
+data "aws_security_group" "postgres-security-group" {
   vpc_id = data.aws_vpc.selected.id
   filter {
-      name   = "tag:Name"
-      values = ["postgres-security-group"]
-    }
+    name   = "tag:Name"
+    values = ["postgres-security-group"]
+  }
 }
 
 resource "aws_db_subnet_group" "pedido" {
@@ -51,7 +51,7 @@ resource "aws_db_instance" "pedido" {
   publicly_accessible    = true
   skip_final_snapshot    = true
   db_subnet_group_name   = aws_db_subnet_group.pedido.name
-  vpc_security_group_ids = [data.aws_security_group.postgres_security_group.id]
+  vpc_security_group_ids = [data.aws_security_group.postgres-security-group.id]
   tags = {
     Name = "PedidoPostgresDB"
   }
