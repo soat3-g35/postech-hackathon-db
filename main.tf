@@ -25,10 +25,10 @@ output "subnet_cidr_blocks" {
 
 data "aws_security_group" "postgres-security-group" {
   vpc_id = data.aws_vpc.selected.id
-
-  tags = {
-    Name = "postgres-security-group"
-  }
+  filter {
+      name   = "tag:Name"
+      values = ["postgres-security-group"]
+    }
 }
 
 resource "aws_db_subnet_group" "pedido" {
