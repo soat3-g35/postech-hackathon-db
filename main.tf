@@ -27,7 +27,7 @@ data "aws_security_group" "sg" {
   vpc_id = data.aws_vpc.selected.id
   filter {
     name   = "tag:Name"
-    values = ["postgres-security-group"]
+    values = ["g35-eks-cluster-cluster"]
   }
 }
 
