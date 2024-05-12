@@ -6,7 +6,7 @@ provider "aws" {
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["postech-vpc"]
+    values = ["g35-vpc"]
   }
 }
 
@@ -23,32 +23,6 @@ output "subnet_cidr_blocks" {
   value = [for s in data.aws_subnet.example : s.cidr_block]
 }
 
-# data "aws_subnet_ids" "selected" {
-#   filter {
-#     name   = "tag:Name"
-#     values = ["postech-vpc"] # insert values here
-#   }
-# }
-
-# data "aws_subnet_ids" "selected" {
-
-
-
-#   filter {
-#         name   = "vpc-id"
-#         values = [data.aws_vpc.selected.id]
-#       }
-
-#       tags = {
-#         Name = "postech-vpc"
-#       }
-
-#   # filter {
-#   #   name   = "tag:Name"
-#   #   values = ["postech-vpc"]
-#   # }
-# }
-
 resource "aws_security_group" "instance" {
   name   = "postgres-security-group"
   vpc_id = data.aws_vpc.selected.id
@@ -60,17 +34,17 @@ resource "aws_security_group" "instance" {
   }
 }
 
-resource "aws_db_subnet_group" "education" {
-  name       = "education"
+resource "aws_db_subnet_group" "pedido" {
+  name       = "pedido"
   subnet_ids = data.aws_subnet_ids.example.ids
 
   tags = {
-    Name = "Education"
+    Name = "Pedido"
   }
 }
 
-resource "aws_db_instance" "education" {
-  identifier             = "education"
+resource "aws_db_instance" "pedido" {
+  identifier             = "pedido"
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
@@ -79,10 +53,10 @@ resource "aws_db_instance" "education" {
   password               = "postgres"
   publicly_accessible    = true
   skip_final_snapshot    = true
-  db_subnet_group_name   = aws_db_subnet_group.education.name
+  db_subnet_group_name   = aws_db_subnet_group.pedido.name
   vpc_security_group_ids = [aws_security_group.instance.id]
 
   tags = {
-    Name = "MyPostgresDB"
+    Name = "PedidoPostgresDB"
   }
 }
