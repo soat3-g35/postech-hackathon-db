@@ -42,6 +42,7 @@ resource "aws_db_subnet_group" "pedido" {
 
 resource "aws_db_instance" "pedido" {
   identifier             = "pedido"
+  name                   = "pedido"
   instance_class         = "db.t3.micro"
   allocated_storage      = 5
   engine                 = "postgres"
