@@ -6,7 +6,7 @@ provider "aws" {
 data "aws_vpc" "selected" {
   filter {
     name   = "tag:Name"
-    values = ["g35-vpc"]
+    values = ["postech-vpc"]
   }
 }
 
